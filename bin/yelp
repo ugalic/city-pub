@@ -1,0 +1,105 @@
+#!/usr/bin/env ruby
+# 1.9 adds realpath to resolve symlinks; 1.8 doesn't
+# have this method, so we add it so we get resolved symlinks
+# and compatibility
+unless File.respond_to? :realpath
+  class File #:nodoc:
+    def self.realpath path
+      return realpath(File.readlink(path)) if symlink?(path)
+      path
+    end
+  end
+end
+$: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
+require 'rubygems'
+require 'gli'
+require 'yelp_version'
+require 'yelp/api'
+require 'yelp/web'
+require 'yaml'
+
+include GLI
+
+program_desc 'Ruby script that supports Yelp API v2.0 '
+
+version Yelp::VERSION
+CONFIG_FILE = File.join(ENV['HOME'],'.yelp.rc.yaml')
+API_OPTIONS = { 
+  consumer_key: '',
+  consumer_secret: '',
+  token: '',
+  token_secret: '',
+  api_host: ''
+}
+
+desc 'Login into Yelp with username and password'
+arg_name '<Username> <Password>'
+command :login do |c|
+
+  c.action do |global_options,options,args|
+
+    username, password = args.shift, args.shift
+    if username.nil? || password.nil?
+      puts "You need to provide <Username> and <Password> !\n Run: yelp help login"
+      exit 1
+    end
+
+    msg = Yelp::Web.login( username: username, password: password )
+    p msg
+    
+  end
+end
+
+desc 'Seach for popular pub in given city'
+arg_name '<City>'
+command :pub do |c|
+  c.action do |global_options,options,args|
+    
+    if args.empty?
+      p "For details run: yelp help pub"
+      exit 1
+    end
+    
+    city = args.shift
+    if File.exists? CONFIG_FILE
+      options_config = YAML.load_file( CONFIG_FILE )
+      options_config.reject!{ |key, value| value == ''  }
+
+      if options_config.empty?
+        STDERR.puts "Please add API access details in #{CONFIG_FILE}"
+      else
+        api = Yelp::Api.new( options_config )
+        results = api.popular_pub_in( city )
+        STDERR.puts results
+      end
+    else
+      File.open(CONFIG_FILE,'w') { |file| YAML::dump( API_OPTIONS, file ) }
+      STDERR.puts "Initialized configuration file in #{CONFIG_FILE}"
+      STDERR.puts "Before using Yelp API, please add API access details in #{CONFIG_FILE}"
+    end
+    
+  end
+end
+
+pre do |global,command,options,args|
+  # Pre logic here
+  # Return true to proceed; false to abort and not call the
+  # chosen command
+  # Use skips_pre before a command to skip this block
+  # on that command only
+  true
+end
+
+post do |global,command,options,args|
+  # Post logic here
+  # Use skips_post before a command to skip this
+  # block on that command only
+end
+
+on_error do |exception|
+  # Error logic here
+  # return false to skip default error handling
+  true
+end
+
+exit GLI.run(ARGV)
