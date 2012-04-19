@@ -1,9 +1,9 @@
 This is a small Ruby command line tool for interacting with Yelp.
-### Install
+=Install
 
   gem install ugalic_yelp
   
-### Usage
+=Usage
 Information about most popular pub:
   yelp pub <City>
   
