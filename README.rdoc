@@ -1,6 +1,11 @@
-= yelp
+This is a small Ruby command line tool for interacting with Yelp.
+### Install
 
-Describe your project here
-
-:include:yelp.rdoc
-
+  gem install ugalic_yelp
+  
+### Usage
+Information about most popular pub:
+  yelp pub <City>
+  
+Check if your login is valid:
+  yelp login <username> <password>
