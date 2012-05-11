@@ -19,30 +19,16 @@ describe Yelp::Service do
     
     service.popular_pub_in( city )
   end
-  
-  # it 'should notify user if no matching results' do
-  #     api.access_token.stub_chain(:get, :body).and_return( api_result_empty )
-  #     result = api.popular_pub_in( 'Not a City' )
-  #     result.should eql('No matching results')
-  #   end
-  
+
   it 'should notify user if no matching results' do
-    service.search.stub( :pub ).and_return( api_result )
+    service.search.stub( :pub ).and_return( api_result_empty )
     result = service.popular_pub_in( 'Not a City' )
     result.should eql('No matching results')
   end
-  
-  
-  xit 'should set neighborhoods to N/A if no neighborhoods present' do
-    json_pub = JSON.parse( api_result )['businesses'].first
-    json_pub['location'].delete('neighborhoods')
-    output = api.prepare_output( json_pub )
-    output.should match(/N\/A/)
-  end
-  
-  xit 'should notify due connection error' do
-    api.access_token.stub(:get).and_raise( SocketError )
-    result = api.popular_pub_in( 'London' )
+
+  it 'should notify due connection error' do
+    service.search.access_token.stub(:get).and_raise( SocketError )
+    result = service.popular_pub_in( 'London' )
     
     result.should eql('Could not connect to the internet')
   end
