@@ -27,5 +27,6 @@ module Yelp
         @accessToken.get( path )
       end
     end
+
   end
 end

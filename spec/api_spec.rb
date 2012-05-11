@@ -26,7 +26,7 @@ describe Yelp::Service do
   #     result.should eql('No matching results')
   #   end
   
-  xit 'should notify user if no matching results' do
+  it 'should notify user if no matching results' do
     service.search.stub( :pub ).and_return( api_result )
     result = service.popular_pub_in( 'Not a City' )
     result.should eql('No matching results')
