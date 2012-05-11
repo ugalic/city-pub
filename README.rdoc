@@ -9,3 +9,6 @@ Information about most popular pub:
   
 Check if your login is valid:
   yelp login <username> <password>
+
+=TODO
+  update tests
