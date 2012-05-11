@@ -9,7 +9,7 @@ module Yelp
       def initialize( args )
         @consumer = OAuth::Consumer.new( args.consumer_key, args.consumer_secret, {:site => "http://#{args.api_host}"} )
       end
-      
+
       def origin
         @consumer
       end
@@ -27,5 +27,6 @@ module Yelp
         @accessToken.get( path )
       end
     end
+
   end
 end

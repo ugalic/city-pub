@@ -4,14 +4,8 @@
 # loaded once.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require File.expand_path("../../lib/yelp/web.rb", __FILE__)
-require File.expand_path("../../lib/yelp/service.rb", __FILE__)
-require File.expand_path("../../lib/yelp/api/config.rb", __FILE__)
-require File.expand_path("../../lib/yelp/api/oauth.rb", __FILE__)
-require File.expand_path("../../lib/yelp/api/results.rb", __FILE__)
-require File.expand_path("../../lib/yelp/api/search.rb", __FILE__)
 
-# Dir['./../lib/**/*.rb'].each{ |file| require file }
+Dir[File.dirname(__FILE__) + '/../lib/**/*.rb'].each {|file| require file }
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true

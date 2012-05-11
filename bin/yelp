@@ -11,18 +11,12 @@ unless File.respond_to? :realpath
   end
 end
 $: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
-$: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib/api/oauth')
 require 'rubygems'
 require 'gli'
 require 'yelp_version'
 
-# Dir[File.dirname(__FILE__) + '/supermarket/**/*.rb'].each {|file| require file }
-require 'yelp/service'
-require 'yelp/api/results'
-require 'yelp/api/search'
-require 'yelp/api/oauth'
-require 'yelp/api/config'
-require 'yelp/web'
+Dir[File.dirname(__FILE__) + '/../lib/**/*.rb'].each {|file| require file }
+
 require 'yaml'
 
 include GLI
