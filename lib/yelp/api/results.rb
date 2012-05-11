@@ -1,33 +1,14 @@
-require 'oauth'
 require 'json'
 
 module Yelp
-  class Api
-
-    attr_accessor :consumer, :access_token, :body
-
-    PATH  = '/v2/search?term=pubs&sort=2&cc=GB&location=__CITY__'
-    MSG = {
-      connection_error: 'Could not connect to the internet',
-      no_results: 'No matching results' }
-
-      def initialize( options )
-        @body = "", ""
-        @consumer = OAuth::Consumer.new( options[:consumer_key], options[:consumer_secret], {:site => "http://#{options[:api_host]}"} )
-        @access_token = OAuth::AccessToken.new( @consumer, options[:token], options[:token_secret] )
+  module Api
+    class Results
+      def initialize( args )
+        @body = args
       end
-
-      def popular_pub_in( city = 'London')
-        path = PATH.gsub( '__CITY__', city )
-        @body = @access_token.get( path ).body
-        @body.include?('error') ? JSON.parse(@body)['error']['text'] : results
-      rescue SocketError => e
-        MSG[:connection_error]
-      rescue Exception => e
-        "[#{e.class}] - #{e.message}"
-      end
-
-      def results
+      
+      def pub
+        return JSON.parse(@body)['error']['text'] if @body.include?('error')
         business = {}
         @body = JSON.parse( @body )
         unless @body['businesses'].empty?
@@ -35,7 +16,7 @@ module Yelp
           business['location']['address'] << business['location']['postal_code']
         end
 
-        business.empty? ? MSG[:no_results] : prepare_output( business )
+        business.empty? ? [] : prepare_output( business )
       end
 
       def prepare_output( business )
@@ -57,7 +38,7 @@ The highest rated pub in #{business['location']['city']} is:
 """
         output
       end
-
+      
     end
-
   end
+end
