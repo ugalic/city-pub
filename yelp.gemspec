@@ -12,7 +12,11 @@ spec = Gem::Specification.new do |s|
   s.files = %w(
 bin/yelp
 lib/yelp_version.rb
-lib/yelp/api.rb
+lib/yelp/api/config.rb
+lib/yelp/api/oauth.rb
+lib/yelp/api/results.rb
+lib/yelp/api/search.rb
+lib/yelp/service.rb
 lib/yelp/web.rb
   )
   s.require_paths << 'lib'
